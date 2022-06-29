@@ -125,7 +125,7 @@ def main():
     type = update_Type(latest["latest"])
     message =(f"## Your Update Path: **{type['current']}** → **{latest['latest']}**\n\nmacOS **{latest['latest']}** was released on **{latest['posting']}**.  "
     f"It is a **{type['type']}** update and will require around **{type['time']}** minutes downtime.\n\nDays Remaining to Update: **{latest['days_Left']}**\n\n"
-    f"To begin the update, click on **Update Now** and follow the provided steps.\n*You can also use the [Mac Manage App](https://docs.google.com/document/d/1oWuT7Tgsv-DHFNmivSc_Ibz61vtKKkRvqQoYmQsrKzI/edit?usp=sharing) to update at your convenience*.")
+    f"To begin the update, click on **Update Now** and follow the provided steps.\n*You can also use the [Self Service app](jamfselfservice://content?entity=policy&id=97&action=view) to update at your convenience*.")
     write_log(str(latest['days_Left']))
     if latest['days_Left'] > 23:
         write_log("Still in grace period, exiting")
@@ -133,16 +133,13 @@ def main():
     if latest['days_Left'] <= 0:
         write_log("Update is past deadline")
         update = "required"
-        finalDialog = DialogAlert(message)
+        finalDialog = DialogAlert(message + "\n\n**Notice: You have passed the deadline and this message will persist until you install the update and reboot**")
         finalDialog.content_dict["ontop"] = 1
         finalDialog.content_dict.pop("button2text")
         i = 0
-    # going to remove this as there is no way to tell when the user clicked the button so it would just keep popping up until reboot.
-    # might also want to consider using plist in /Library/Preferences as binary seems unreliable 
-    # while latest['days_Left'] <= 0 and i < 5:
-    #     write_log(f"Update attempt: {i}")
-    #     run_Final = finalDialog.alert(finalDialog.content_dict)
-    #     i += 1
+    while latest['days_Left'] <= 0:
+        write_log(f"Update attempt: {i}")
+        run_Final = finalDialog.alert(finalDialog.content_dict)
     
     mainDialog = DialogAlert(message)
     run_Main = mainDialog.alert(mainDialog.content_dict)
