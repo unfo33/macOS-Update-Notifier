@@ -71,9 +71,10 @@ def update_Type(latest):
     if latest == current_OS:
         write_log("On Latest Version, exiting")
         sys.exit(0)
-    if not update_Check():
-        write_log("New Update available on Apple website but not locally, exiting")
-        sys.exit(0)
+    # Going to remove this check as I am using Jamf scoping to see if update appears locally
+    # if not update_Check():
+    #     write_log("New Update available on Apple website but not locally, exiting")
+    #     sys.exit(0)
     if current_OS[0:1] == latest[0:1]:
          Update = "feature"
          write_log(f"Current update is: {Update}")
